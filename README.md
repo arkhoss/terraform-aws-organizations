@@ -119,7 +119,16 @@ No requirements.
 
 ## Inputs
 
-No input.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| aws\_service\_access\_principals | description | `list` | `[]` | no |
+| create\_org | This variable controls if Organization will be created or not | `bool` | `true` | no |
+| create\_organizational\_units | This variable controls if Organizations Organizational unit will be created or not | `bool` | `false` | no |
+| create\_organizations\_accounts | This variable controls if Organizations Organizational unit will be created or not | `bool` | `false` | no |
+| enabled\_policy\_types | List of Organizations Policy Types to enable in the Organization Root | `list` | `[]` | no |
+| feature\_set | n/a | `string` | `"ALL"` | no |
+| organizational\_units | Organizational Units | <pre>list(object({<br>    name      = string<br>    parent_id = string<br>  }))</pre> | <pre>[<br>  {<br>    "name": "my_ou",<br>    "parent_id": "parent_id"<br>  }<br>]</pre> | no |
+| organizations\_accounts | Organizational Units | <pre>list(object({<br>    name  = string<br>    email = string<br>  }))</pre> | <pre>[<br>  {<br>    "email": "my@myorg.com",<br>    "name": "my_ou"<br>  }<br>]</pre> | no |
 
 ## Outputs
 
