@@ -71,9 +71,17 @@ module "my-org" {
   create_organizations_accounts = var.create_organizations_accounts
   organizations_accounts = [
     {
-      name  = "my_ou",
-      email = "my@dcab.com"
-    }
+      name      = "my_ou",
+      email     = "my@dcab.com",
+      parent_id = "",
+      role_name = "MyRoleHere"
+    },
+    {
+      name      = "my_ou2",
+      email     = "my2@dcab.com",
+      parent_id = "",
+      role_name = ""
+    },
   ]
 }
 

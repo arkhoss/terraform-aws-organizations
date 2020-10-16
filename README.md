@@ -128,7 +128,12 @@ No requirements.
 | enabled\_policy\_types | List of Organizations Policy Types to enable in the Organization Root | `list` | `[]` | no |
 | feature\_set | n/a | `string` | `"ALL"` | no |
 | organizational\_units | Organizational Units | <pre>list(object({<br>    name      = string<br>    parent_id = string<br>  }))</pre> | <pre>[<br>  {<br>    "name": "my_ou",<br>    "parent_id": "parent_id"<br>  }<br>]</pre> | no |
-| organizations\_accounts | Organizational Units | <pre>list(object({<br>    name  = string<br>    email = string<br>  }))</pre> | <pre>[<br>  {<br>    "email": "my@myorg.com",<br>    "name": "my_ou"<br>  }<br>]</pre> | no |
+| organizations\_accounts | Organizations Accounts | <pre>list(object({<br>    name      = string<br>    email     = string<br>    parent_id = string<br>    role_name = string<br>  }))</pre> | <pre>[<br>  {<br>    "email": "my@myorg.com",<br>    "name": "my_ou",<br>    "parent_id": "parent_id",<br>    "role_name": ""<br>  }<br>]</pre> | no |
+| policy\_content | The policy content to add to the new policy. For example, if you create a [service control policy (SCP)](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html), this string must be JSON text that specifies the permissions that admins in attached accounts can delegate to their users, groups, and roles. For more information about the SCP syntax, see the [Service Control Policy Syntax documentation](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_scp-syntax.html) and for more information on the Tag Policy syntax, see the [Tag Policy Syntax documentation.](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_example-tag-policies.html) | `string` | `"{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": {\n    \"Effect\": \"Allow\",\n    \"Action\": \"*\",\n    \"Resource\": \"*\"\n  }\n}\n"` | no |
+| policy\_description | A description to assign to the policy | `string` | `""` | no |
+| policy\_id | The unique identifier (ID) of the policy that you want to attach to the target | `string` | `""` | no |
+| policy\_name | The friendly name to assign to the policy | `string` | `""` | no |
+| policy\_type | The type of policy to create. Currently, the only valid values are SERVICE\_CONTROL\_POLICY (SCP) and TAG\_POLICY. Defaults to SERVICE\_CONTROL\_POLICY | `string` | `"SERVICE_CONTROL_POLICY"` | no |
 
 ## Outputs
 

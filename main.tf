@@ -42,8 +42,31 @@ resource "aws_organizations_organizational_unit" "this" {
 resource "aws_organizations_account" "this" {
 
   for_each = var.create_organizations_accounts ? { for acc in var.organizations_accounts : acc.name => acc } : {}
-  name     = each.value.name
-  email    = each.value.email
+
+  name      = each.value.name
+  email     = each.value.email
+  parent_id = length(each.value.parent_id) > 0 ? each.value.parent_id : aws_organizations_organization.this[0].roots[0].id
+  role_name = length(each.value.role_name) > 0 ? each.value.role_name : null
 }
 
+##########################
+#  Organizations Policy  #
+##########################
+resource "aws_organizations_policy" "policy" {
+  count = length(var.policy_name) > 0 ? 1 : 0
+
+  name        = var.policy_name
+  description = var.policy_description
+
+  type = var.policy_type
+
+  content = var.policy_content
+}
+
+resource "aws_organizations_policy_attachment" "policy_attachment" {
+  count = length(var.target_id) > 0 ? length(var.target_id) : 0
+
+  policy_id = local.policy_id[0]
+  target_id = tolist(var.target_id)[count.index]
+}
 
