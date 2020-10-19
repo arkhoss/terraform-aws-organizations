@@ -44,6 +44,12 @@ variable create_organizations_accounts {
   description = "This variable controls if Organizations Organizational unit will be created or not"
 }
 
+variable create_organizations_policies {
+  type        = bool
+  default     = true
+  description = "This variable controls if Organizations Policies will be created or not"
+}
+
 provider "aws" {
   region  = var.aws_region
   profile = "default"
@@ -82,6 +88,26 @@ module "my-org" {
       parent_id = "",
       role_name = ""
     },
+  ]
+
+  # My Org Policy
+  create_organizations_policies = var.create_organizations_policies
+  organizations_policy = [
+    {
+      name        = "my_policy",
+      description = "this is my policy",
+      type        = "SERVICE_CONTROL_POLICY",
+      content     = <<CONTENT
+{
+  "Version": "2012-10-17",
+  "Statement": {
+    "Effect": "Allow",
+    "Action": "*",
+    "Resource": "*"
+  }
+}
+CONTENT
+    }
   ]
 }
 

@@ -1,7 +1,7 @@
 # Organization Variables
 variable create_org {
   type        = bool
-  default     = true
+  default     = false
   description = "This variable controls if Organization will be created or not"
 }
 
@@ -48,7 +48,7 @@ variable organizational_units {
 variable create_organizations_accounts {
   type        = bool
   default     = false
-  description = "This variable controls if Organizations Organizational unit will be created or not"
+  description = "This variable controls if Organizations Accounts will be created or not"
 }
 
 variable organizations_accounts {
@@ -70,25 +70,25 @@ variable organizations_accounts {
 }
 
 # Organizations Policy
-
-variable "policy_name" {
-  default     = ""
-  description = "The friendly name to assign to the policy"
+variable create_organizations_policies {
+  type        = bool
+  default     = false
+  description = "This variable controls if Organizations Policies will be created or not"
 }
 
-variable "policy_description" {
-  default     = ""
-  description = "A description to assign to the policy"
-}
-
-variable "policy_type" {
-  default     = "SERVICE_CONTROL_POLICY"
-  description = "The type of policy to create. Currently, the only valid values are SERVICE_CONTROL_POLICY (SCP) and TAG_POLICY. Defaults to SERVICE_CONTROL_POLICY"
-}
-
-variable "policy_content" {
-  description = "The policy content to add to the new policy. For example, if you create a [service control policy (SCP)](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scp.html), this string must be JSON text that specifies the permissions that admins in attached accounts can delegate to their users, groups, and roles. For more information about the SCP syntax, see the [Service Control Policy Syntax documentation](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_scp-syntax.html) and for more information on the Tag Policy syntax, see the [Tag Policy Syntax documentation.](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_example-tag-policies.html)"
-  default     = <<CONTENT
+variable organizations_policy {
+  type = list(object({
+    name        = string
+    description = string
+    type        = string
+    content     = string
+  }))
+  default = [
+    {
+      name        = "my_policy",
+      description = "this is my policy",
+      type        = "SERVICE_CONTROL_POLICY",
+      content     = <<CONTENT
 {
   "Version": "2012-10-17",
   "Statement": {
@@ -98,9 +98,25 @@ variable "policy_content" {
   }
 }
 CONTENT
+    }
+  ]
+  description = "Organizations Policies"
 }
+
 
 variable "policy_id" {
   default     = ""
   description = "The unique identifier (ID) of the policy that you want to attach to the target"
+}
+
+variable "target_id" {
+  type        = any
+  default     = []
+  description = "The unique identifier (ID) of the root, organizational unit, or account number that you want to attach the policy to"
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Tags"
+  default     = { "Name" = "" }
 }

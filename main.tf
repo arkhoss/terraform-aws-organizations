@@ -1,15 +1,8 @@
 data "aws_caller_identity" "current" {}
 
 locals {
-  # Get distinct OUs names and parents
-  #distinct_ou_names  = distinct(var.organizational_units.*.ou_name)
-  #distinct_ou_parent = distinct(var.organizational_units.*.parent_ou_name)
-
-  # Get distinct Accounts names and parents
-  #distinct_accounts = distinct(var.accounts)
-
+  policy_id = coalescelist(aws_organizations_policy.policy.*, [var.policy_id])
 }
-
 
 ################
 # Organization #
@@ -47,20 +40,24 @@ resource "aws_organizations_account" "this" {
   email     = each.value.email
   parent_id = length(each.value.parent_id) > 0 ? each.value.parent_id : aws_organizations_organization.this[0].roots[0].id
   role_name = length(each.value.role_name) > 0 ? each.value.role_name : null
+
+  tags = var.tags
 }
 
 ##########################
 #  Organizations Policy  #
 ##########################
 resource "aws_organizations_policy" "policy" {
-  count = length(var.policy_name) > 0 ? 1 : 0
+  for_each = var.create_organizations_policies ? { for poli in var.organizations_policy : poli.name => poli } : {}
 
-  name        = var.policy_name
-  description = var.policy_description
+  name        = each.value.name
+  description = each.value.description
 
-  type = var.policy_type
+  type = each.value.type
 
-  content = var.policy_content
+  content = each.value.content
+
+  tags = var.tags
 }
 
 resource "aws_organizations_policy_attachment" "policy_attachment" {
@@ -69,4 +66,6 @@ resource "aws_organizations_policy_attachment" "policy_attachment" {
   policy_id = local.policy_id[0]
   target_id = tolist(var.target_id)[count.index]
 }
+
+
 
